@@ -1,11 +1,24 @@
 import { forwardRef, memo } from 'react';
 import type { ButtonHTMLAttributes } from 'react';
 
+/**
+ * @interface ButtonProps
+ * @description Props for the Button component. Extends standard button attributes.
+ * @property {'primary' | 'secondary'} [variant='primary'] - The visual style of the button.
+ * @property {'sm' | 'md' | 'lg'} [size='md'] - The size of the button.
+ */
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
 }
 
+/**
+ * A customizable button component with different variants and sizes.
+ * It forwards a ref to the underlying button element.
+ * @param {ButtonProps} props - The props for the component.
+ * @param {React.Ref<HTMLButtonElement>} ref - The ref to forward to the button element.
+ * @returns {JSX.Element} The rendered Button component.
+ */
 export const Button = memo(
   forwardRef<HTMLButtonElement, ButtonProps>(
     ({ variant = 'primary', size = 'md', children, className = '', ...props }, ref) => {

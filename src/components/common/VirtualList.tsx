@@ -1,6 +1,17 @@
 import { useCallback, useRef, useState, useEffect, memo } from 'react';
 import type { ReactNode } from 'react';
 
+/**
+ * @interface VirtualListProps
+ * @description Props for the VirtualList component.
+ * @template T - The type of the items in the list.
+ * @property {T[]} items - The array of items to render.
+ * @property {number} itemHeight - The height of each item in pixels. This must be constant.
+ * @property {number} containerHeight - The height of the scrollable container in pixels.
+ * @property {number} [overscan=3] - The number of items to render before and after the visible area to reduce flickering on scroll.
+ * @property {(item: T, index: number) => ReactNode} renderItem - A function that renders a single item.
+ * @property {(item: T, index: number) => string} keyExtractor - A function that returns a unique key for each item.
+ */
 interface VirtualListProps<T> {
   items: T[];
   itemHeight: number;
@@ -10,6 +21,13 @@ interface VirtualListProps<T> {
   keyExtractor: (item: T, index: number) => string;
 }
 
+/**
+ * A component that renders a virtualized list, only rendering the items currently
+ * visible in the viewport (plus an overscan buffer) to improve performance with long lists.
+ * @template T - The type of the items in the list.
+ * @param {VirtualListProps<T>} props - The props for the component.
+ * @returns {JSX.Element} The rendered VirtualList component.
+ */
 function VirtualListComponent<T>({
   items,
   itemHeight,
