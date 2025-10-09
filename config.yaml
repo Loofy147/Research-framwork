@@ -1,0 +1,20 @@
+# This file defines the experiments to be run by the MetaOrchestrator.
+# It allows for a declarative approach to configuring benchmarks.
+
+experiments:
+  - name: "Adversarial Robustness Test for Text Parsing"
+    # The type of experiment. The orchestrator can use this to decide which method to call.
+    type: "adversarial_benchmark"
+
+    # The adversarial agent responsible for generating the challenging context.
+    adversarialVariant: "SimpleAdversarialVariant"
+
+    # The list of target agents that will be tested against the generated context.
+    targetVariants:
+      - "BasicParserAgent" # A hypothetical simple agent.
+      - "AdvancedParserAgent" # A hypothetical more advanced agent.
+
+    # The initial context provided to the adversarial agent to start the process.
+    context:
+      initialPrompt: "Please generate a challenging parsing task."
+      topic: "user_data_extraction"
