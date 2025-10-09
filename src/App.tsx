@@ -3,6 +3,12 @@ import { useAuth } from './contexts/AuthContext';
 import { Button, Card } from './components/ui';
 import { Shield, Zap, Lock, Database } from 'lucide-react';
 
+/**
+ * The main application component.
+ * It displays a loading indicator while authentication is being processed,
+ * and then renders the main landing page, showcasing the application's features.
+ * @returns {JSX.Element} The rendered App component.
+ */
 const App = memo(() => {
   const { loading } = useAuth();
 

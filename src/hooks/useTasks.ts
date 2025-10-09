@@ -5,6 +5,18 @@ import { useOptimistic } from './useOptimistic';
 import { logger } from '../utils/logger';
 import type { Task } from '../types/database';
 
+/**
+ * A comprehensive hook for managing tasks, including data fetching, real-time updates, and optimistic UI.
+ * @returns {{
+ *   tasks: Task[];
+ *   loading: boolean;
+ *   error: string | null;
+ *   createTask: (data: Partial<Task>) => Promise<Task | null>;
+ *   updateTask: (id: string, data: Partial<Task>) => Promise<Task | null>;
+ *   deleteTask: (id: string) => Promise<void>;
+ *   reload: () => Promise<void>;
+ * }} An object containing the tasks, loading state, error state, and functions to manipulate tasks.
+ */
 export function useTasks() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

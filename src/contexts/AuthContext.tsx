@@ -4,22 +4,45 @@ import { supabase } from '../services/supabase';
 import { logger } from '../utils/logger';
 import type { AuthState, User, Session } from '../types';
 
+/**
+ * @interface AuthContextType
+ * @description The shape of the authentication context, including state and actions.
+ * @extends AuthState
+ * @property {(email: string, password: string) => Promise<void>} signIn - Function to sign in a user.
+ * @property {(email: string, password: string) => Promise<void>} signUp - Function to sign up a new user.
+ * @property {() => Promise<void>} signOut - Function to sign out the current user.
+ */
 interface AuthContextType extends AuthState {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
+/**
+ * React context for authentication state and actions.
+ * @type {React.Context<AuthContextType | undefined>}
+ */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * A custom hook to access the authentication context.
+ * Throws an error if used outside of an AuthProvider.
+ * @returns {AuthContextType} The authentication context.
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
+/**
+ * A provider component that makes the authentication context available to its children.
+ * It manages the authentication state, session, and provides functions for auth actions.
+ * @param {{ children: ReactNode }} props - The props for the component.
+ * @returns {JSX.Element} The rendered AuthProvider component.
+ */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<AuthState>({
     user: null,

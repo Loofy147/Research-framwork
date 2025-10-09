@@ -1,6 +1,16 @@
 import { useState, useEffect, memo } from 'react';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 
+/**
+ * @interface LazyImageProps
+ * @description Props for the LazyImage component.
+ * @property {string} src - The source URL of the image to load.
+ * @property {string} alt - The alternative text for the image.
+ * @property {string} [placeholder] - A placeholder image source to display while the main image is loading. Defaults to a gray SVG.
+ * @property {string} [className] - Additional CSS classes to apply to the container element.
+ * @property {() => void} [onLoad] - Callback function to be executed when the image successfully loads.
+ * @property {() => void} [onError] - Callback function to be executed if the image fails to load.
+ */
 interface LazyImageProps {
   src: string;
   alt: string;
@@ -10,6 +20,12 @@ interface LazyImageProps {
   onError?: () => void;
 }
 
+/**
+ * A React component that lazily loads an image when it enters the viewport.
+ * It displays a placeholder until the image is loaded.
+ * @param {LazyImageProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered LazyImage component.
+ */
 export const LazyImage = memo(({
   src,
   alt,

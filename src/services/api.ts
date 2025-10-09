@@ -3,13 +3,36 @@ import { withRetry, CircuitBreaker } from '../utils/retry';
 import { logger } from '../utils/logger';
 import type { ApiResponse } from '../types';
 
+/**
+ * A circuit breaker to prevent repeated calls to a failing service.
+ * @type {CircuitBreaker}
+ */
 const circuitBreaker = new CircuitBreaker(5, 60000, 30000);
 
+/**
+ * @class ApiService
+ * @description A singleton service for interacting with the Supabase API.
+ * It includes features like retry logic, circuit breaker, and logging.
+ */
 export class ApiService {
+  /**
+   * The singleton instance of the ApiService.
+   * @private
+   * @static
+   * @type {ApiService}
+   */
   private static instance: ApiService;
 
+  /**
+   * The private constructor to prevent direct instantiation.
+   * @private
+   */
   private constructor() {}
 
+  /**
+   * Gets the singleton instance of the ApiService.
+   * @returns {ApiService} The singleton instance.
+   */
   static getInstance(): ApiService {
     if (!ApiService.instance) {
       ApiService.instance = new ApiService();
@@ -17,6 +40,19 @@ export class ApiService {
     return ApiService.instance;
   }
 
+  /**
+   * Performs a query on a Supabase table.
+   * @template T
+   * @param {string} table - The name of the table to query.
+   * @param {object} [options={}] - The query options.
+   * @param {string} [options.select='*'] - The columns to select.
+   * @param {Record<string, unknown>} [options.filters] - The filters to apply to the query.
+   * @param {object} [options.order] - The ordering of the results.
+   * @param {string} options.order.column - The column to order by.
+   * @param {boolean} [options.order.ascending=true] - Whether to sort in ascending order.
+   * @param {number} [options.limit] - The maximum number of results to return.
+   * @returns {Promise<ApiResponse<T[]>>} A promise that resolves with the query results.
+   */
   async query<T>(
     table: string,
     options: {
@@ -67,6 +103,13 @@ export class ApiService {
     }
   }
 
+  /**
+   * Creates a new record in a Supabase table.
+   * @template T
+   * @param {string} table - The name of the table to create the record in.
+   * @param {Partial<T>} data - The data for the new record.
+   * @returns {Promise<ApiResponse<T>>} A promise that resolves with the created record.
+   */
   async create<T>(table: string, data: Partial<T>): Promise<ApiResponse<T>> {
     try {
       return await circuitBreaker.execute(async () => {
@@ -95,6 +138,14 @@ export class ApiService {
     }
   }
 
+  /**
+   * Updates an existing record in a Supabase table.
+   * @template T
+   * @param {string} table - The name of the table to update the record in.
+   * @param {string} id - The ID of the record to update.
+   * @param {Partial<T>} data - The updated data for the record.
+   * @returns {Promise<ApiResponse<T>>} A promise that resolves with the updated record.
+   */
   async update<T>(
     table: string,
     id: string,
@@ -128,6 +179,12 @@ export class ApiService {
     }
   }
 
+  /**
+   * Deletes a record from a Supabase table.
+   * @param {string} table - The name of the table to delete the record from.
+   * @param {string} id - The ID of the record to delete.
+   * @returns {Promise<ApiResponse<null>>} A promise that resolves when the record is deleted.
+   */
   async delete(table: string, id: string): Promise<ApiResponse<null>> {
     try {
       return await circuitBreaker.execute(async () => {
@@ -152,13 +209,24 @@ export class ApiService {
     }
   }
 
+  /**
+   * Gets the current state of the circuit breaker.
+   * @returns {string} The state of the circuit breaker.
+   */
   getCircuitBreakerState(): string {
     return circuitBreaker.getState();
   }
 
+  /**
+   * Resets the circuit breaker.
+   */
   resetCircuitBreaker(): void {
     circuitBreaker.reset();
   }
 }
 
+/**
+ * The singleton instance of the ApiService.
+ * @type {ApiService}
+ */
 export const apiService = ApiService.getInstance();
