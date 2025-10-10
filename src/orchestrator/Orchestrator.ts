@@ -50,15 +50,21 @@ export class MetaOrchestrator {
    * @returns {Promise<Map<string, PerformanceMetrics>>} A map of performance metrics for each variant.
    */
   public async runStandardExperiment(experiment: Experiment): Promise<Map<string, PerformanceMetrics>> {
+    const experimentTimerLabel = `[Orchestrator] Standard experiment "${experiment.name}"`;
+    console.time(experimentTimerLabel);
     console.log(`[Orchestrator] Starting standard experiment: "${experiment.name}"`);
-    const results = new Map<string, PerformanceMetrics>();
-    for (const variantName of experiment.variants) {
+
+    const promises = experiment.variants.map(async (variantName) => {
       console.log(`  - Running variant: ${variantName}`);
       const variant = this.getVariant(variantName);
       const metrics = await variant.run(experiment.context);
-      results.set(variantName, metrics);
-    }
-    console.log(`[Orchestrator] Standard experiment "${experiment.name}" finished.`);
+      return [variantName, metrics] as [string, PerformanceMetrics];
+    });
+
+    const resultsArray = await Promise.all(promises);
+    const results = new Map<string, PerformanceMetrics>(resultsArray);
+
+    console.timeEnd(experimentTimerLabel);
     return results;
   }
 
@@ -69,6 +75,8 @@ export class MetaOrchestrator {
    * @returns {Promise<Map<string, PerformanceMetrics>>} A map of performance metrics for each target variant.
    */
   public async runAdversarialBenchmark(experiment: AdversarialExperiment): Promise<Map<string, PerformanceMetrics>> {
+    const experimentTimerLabel = `[Orchestrator] Adversarial benchmark "${experiment.name}"`;
+    console.time(experimentTimerLabel);
     console.log(`[Orchestrator] Starting adversarial benchmark: "${experiment.name}"`);
 
     const adversarialVariant = this.getVariant(experiment.adversarialVariant);
@@ -84,15 +92,17 @@ export class MetaOrchestrator {
     console.log(`  - Context generated successfully.`);
 
     // 2. The target agents are run against the new context.
-    const results = new Map<string, PerformanceMetrics>();
-    for (const variantName of experiment.targetVariants) {
+    const promises = experiment.targetVariants.map(async (variantName) => {
       console.log(`  - Running target variant: ${variantName}`);
       const variant = this.getVariant(variantName);
       const metrics = await variant.run(challengingContext);
-      results.set(variantName, metrics);
-    }
+      return [variantName, metrics] as [string, PerformanceMetrics];
+    });
 
-    console.log(`[Orchestrator] Adversarial benchmark "${experiment.name}" finished.`);
+    const resultsArray = await Promise.all(promises);
+    const results = new Map<string, PerformanceMetrics>(resultsArray);
+
+    console.timeEnd(experimentTimerLabel);
     return results;
   }
 }
