@@ -2,7 +2,7 @@
  * @file Implements the abstract base class for an Agent Variant.
  */
 
-import type { AgentVariant as IAgentVariant, Context, PerformanceMetrics } from '../types';
+import type { AgentVariant as IAgentVariant, Context, PerformanceMetrics } from '../types.js';
 
 /**
  * @abstract

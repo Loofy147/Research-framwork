@@ -2,8 +2,8 @@
  * @file Implements a simple concrete Adversarial Agent Variant.
  */
 
-import type { Context } from '../types';
-import { AdversarialVariantBase } from './AdversarialVariant';
+import type { Context } from '../types.js';
+import { AdversarialVariantBase } from './AdversarialVariant.js';
 
 /**
  * @class SimpleAdversarialVariant
