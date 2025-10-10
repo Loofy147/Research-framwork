@@ -2,8 +2,8 @@
  * @file Implements the abstract base class for an Adversarial Agent Variant.
  */
 
-import type { Context, PerformanceMetrics } from '../types';
-import { AgentVariantBase } from './AgentVariant';
+import type { Context, PerformanceMetrics } from '../types.js';
+import { AgentVariantBase } from './AgentVariant.js';
 
 /**
  * @abstract

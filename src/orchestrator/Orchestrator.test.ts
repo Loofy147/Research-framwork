@@ -3,10 +3,10 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { MetaOrchestrator } from './Orchestrator';
-import { SimpleAdversarialVariant } from './variants/SimpleAdversarialVariant';
-import { AgentVariantBase } from './variants/AgentVariant';
-import type { AdversarialExperiment, Context, PerformanceMetrics } from './types';
+import { MetaOrchestrator } from './Orchestrator.js';
+import { SimpleAdversarialVariant } from './variants/SimpleAdversarialVariant.js';
+import { AgentVariantBase } from './variants/AgentVariant.js';
+import type { AdversarialExperiment, Context, PerformanceMetrics } from './types.js';
 
 // A mock target agent for testing purposes.
 class MockTargetAgent extends AgentVariantBase {
