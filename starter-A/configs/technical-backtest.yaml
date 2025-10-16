@@ -1,0 +1,14 @@
+agent:
+  name: "EMA_RSI_Agent"
+  params:
+    emaPeriod: 10
+    rsiPeriod: 14
+    rsiOverbought: 70
+    rsiOversold: 30
+
+simulation:
+  days: 90
+  initialPrice: 100
+
+output:
+  directory: "./output"

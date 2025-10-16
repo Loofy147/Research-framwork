@@ -10,7 +10,7 @@ import { loadConfig } from '../orchestrator/configLoader.js';
 import { writeSummaryReport } from '../orchestrator/reporting.js';
 import { registerAllAgents } from '../orchestrator/agentRegistry.js';
 import type { Context, PerformanceMetrics } from '../orchestrator/types.js';
- */
+
 async function main() {
   await yargs(hideBin(process.argv))
     .command(

@@ -1,14 +1,17 @@
 {
-  "name": "enterprise-app",
+  "name": "ai-agent-meta-orchestrator",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "experiment": "tsc -p tsconfig.node.json && node dist/cli/index.mjs"
+    "build:cli": "tsc -p tsconfig.node.json",
+    "dev:cli": "ts-node-esm src/cli/index.mts",
+    "experiment": "npm run build:cli && node dist/cli/index.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0",

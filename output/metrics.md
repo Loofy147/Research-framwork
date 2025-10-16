@@ -1,0 +1,17 @@
+# Metrics summary
+Collected at: 2025-10-16T22:34:16.129443Z
+
+## Backtest KPIs
+
+- **num_trades**: 2160
+- **total_pnl**: -68.57269558322804
+- **win_rate**: 0.000462962962962963
+- **sharpe_est**: -0.5938810413866721
+- **max_drawdown**: -inf
+- **cagr_approx**: None
+
+## Robot KPIs
+
+- **robot_success_rate**: None
+- **robot_collision_rate**: 0.982
+- **robot_path_efficiency**: 205.73064709198454

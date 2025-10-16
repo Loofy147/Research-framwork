@@ -54,11 +54,11 @@ export class MetaOrchestrator {
     console.time(experimentTimerLabel);
     console.log(`[Orchestrator] Starting standard experiment: "${experiment.name}"`);
 
-    const promises = experiment.variants.map(async (variantName) => {
-      console.log(`  - Running variant: ${variantName}`);
-      const variant = this.getVariant(variantName);
+    const promises = experiment.agents.map(async (agentConfig) => {
+      console.log(`  - Running variant: ${agentConfig.variant}`);
+      const variant = this.getVariant(agentConfig.variant);
       const metrics = await variant.run(experiment.context);
-      return [variantName, metrics] as [string, PerformanceMetrics];
+      return [agentConfig.variant, metrics] as [string, PerformanceMetrics];
     });
 
     const resultsArray = await Promise.all(promises);

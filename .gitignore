@@ -21,3 +21,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+summary.md
+venv/
+venv_metrics/
