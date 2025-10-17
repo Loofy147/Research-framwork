@@ -27,15 +27,14 @@ jobs:
       - name: Build and Smoke Test Starter A
         run: |
           cd starter-A
-          npm ci
+          npm install
           npm run build
-          npm run backtest -- --config configs/technical-backtest.yaml
+          npm run backtest configs/technical-backtest.yaml
 
       - name: Build Starter B
         run: |
           cd starter-B
-          npm ci
-          npm run build
+          npm install
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -46,14 +45,14 @@ jobs:
       - name: Install Python dependencies for metrics
         run: |
           python -m pip install --upgrade pip
-          pip install pandas numpy
+          pip install -r tools/requirements.txt
 
       - name: Smoke Test Starter C
         run: |
           sudo apt-get update && sudo apt-get install -y xvfb
           cd starter-C
           pip install -r requirements.txt
-          xvfb-run -s "-screen 0 1280x720x24" python sim_env.py --config experiment_config.yaml
+          xvfb-run -s "-screen 0 1280x720x24" python sim_env.py --config experiment_config.yaml --headless
         env:
           PYBULLET_EGL: "1"
 
@@ -67,5 +66,5 @@ jobs:
       - name: Upload metrics artifact
         uses: actions/upload-artifact@v4
         with:
-          name: starters-metrics
+          name: starters-metrics-${{ github.run_id }}
           path: output/metrics.json

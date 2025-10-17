@@ -8,6 +8,7 @@ import argparse, json, math, os, pandas as pd, numpy as np
 from datetime import datetime
 
 def sharpe(returns, freq=252):
+    # Note: Sharpe ratio is estimated from per-trade returns and annualized.
     if len(returns) < 2:
         return None
     mu = np.mean(returns)
@@ -62,9 +63,9 @@ def compute_robot_kpis(robot_json):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--backtest', required=False, help='path to starter-A results.csv')
-    p.add_argument('--robot', required=False, help='path to starter-C summary.json')
-    p.add_argument('--out', required=False, default='output/metrics.json', help='output metrics JSON')
+    p.add_argument('--backtest', default=os.getenv('BACKTEST_PATH'), help='path to starter-A results.csv')
+    p.add_argument('--robot', default=os.getenv('ROBOT_SUMMARY'), help='path to starter-C summary.json')
+    p.add_argument('--out', default=os.getenv('METRICS_OUT_PATH', 'output/metrics.json'), help='output metrics JSON')
     args = p.parse_args()
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
@@ -81,7 +82,7 @@ def main():
             result['backtest'] = compute_trading_kpis(df)
         except Exception as e:
             result['backtest_error'] = str(e)
-    else:
+    elif args.backtest:
         result['backtest_error'] = f'file not found: {args.backtest}'
 
     # Robot
@@ -92,7 +93,7 @@ def main():
             result['robot'] = compute_robot_kpis(robot_json)
         except Exception as e:
             result['robot_error'] = str(e)
-    else:
+    elif args.robot:
         result['robot_error'] = f'file not found: {args.robot}'
 
     # write metrics.json

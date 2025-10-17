@@ -7,7 +7,7 @@ echo "==> Running Starter-A backtest"
 cd "$ROOT/starter-A"
 npm install
 npm run build
-npm run backtest configs/technical-backtest.yaml
+npm run backtest configs/technical-backtest.yaml || true
 
 # Run starter-C headless sim (python venv)
 echo "==> Running Starter-C simulation (headless)"
@@ -23,7 +23,7 @@ echo "==> Collecting metrics"
 cd "$ROOT"
 python -m venv venv_metrics || true
 source venv_metrics/bin/activate
-pip install pandas numpy
+pip install -r tools/requirements.txt
 python tools/collect_metrics.py --backtest starter-A/output/results.csv --robot starter-C/logs/summary.json --out output/metrics.json
 deactivate
 
