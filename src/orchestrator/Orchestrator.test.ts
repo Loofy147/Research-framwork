@@ -6,7 +6,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { MetaOrchestrator } from './Orchestrator.js';
 import { SimpleAdversarialVariant } from './variants/SimpleAdversarialVariant.js';
 import { AgentVariantBase } from './variants/AgentVariant.js';
-import type { AdversarialExperiment, Context, PerformanceMetrics } from './types.js';
+import type { Experiment, AdversarialExperiment, Context, PerformanceMetrics } from './types.js';
 
 // A mock target agent for testing purposes.
 class MockTargetAgent extends AgentVariantBase {
@@ -24,6 +24,32 @@ class MockTargetAgent extends AgentVariantBase {
 }
 
 describe('MetaOrchestrator', () => {
+  it('should run a standard experiment correctly', async () => {
+    // 1. Setup
+    const orchestrator = new MetaOrchestrator();
+    const targetVariant = new MockTargetAgent('TestTargetAgent');
+    orchestrator.registerVariant(targetVariant);
+    const runSpy = vi.spyOn(targetVariant, 'run');
+
+    const experiment: Experiment = {
+      name: 'Test Standard Experiment',
+      agents: [{ variant: 'TestTargetAgent' }],
+      context: { difficulty: 'low' },
+    };
+
+    // 2. Execution
+    const results = await orchestrator.runStandardExperiment(experiment);
+
+    // 3. Assertions
+    expect(runSpy).toHaveBeenCalledOnce();
+    expect(runSpy).toHaveBeenCalledWith(experiment.context);
+    expect(results.size).toBe(1);
+    expect(results.has('TestTargetAgent')).toBe(true);
+    const targetResult = results.get('TestTargetAgent');
+    expect(targetResult).toBeDefined();
+    expect(targetResult?.score).toBe(50);
+  });
+
   it('should run an adversarial benchmark experiment correctly', async () => {
     // 1. Setup
     const orchestrator = new MetaOrchestrator();
@@ -45,6 +71,7 @@ describe('MetaOrchestrator', () => {
       adversarialVariant: 'SimpleAdversarialVariant',
       targetVariants: ['TestTargetAgent'],
       context: { initialTask: 'test' },
+      agents: [],
     };
 
     // 2. Execution
@@ -79,6 +106,7 @@ describe('MetaOrchestrator', () => {
       adversarialVariant: 'NonExistentVariant',
       targetVariants: [],
       context: {},
+      agents: [],
     };
 
     await expect(
@@ -96,6 +124,7 @@ describe('MetaOrchestrator', () => {
       adversarialVariant: 'NotAnAdversary',
       targetVariants: [],
       context: {},
+      agents: [],
     };
 
     await expect(

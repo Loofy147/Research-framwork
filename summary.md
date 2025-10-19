@@ -1,6 +1,6 @@
-# Experiment Summary: "Adversarial Robustness Test for Text Parsing"
+# Experiment Summary: "example-adversarial"
 
-**Date:** Fri, 10 Oct 2025 13:51:47 GMT
+**Date:** Thu, 16 Oct 2025 17:04:17 GMT
 
 ---
 
@@ -8,13 +8,17 @@
 
 | Metric | Value |
 |--------|-------|
-| success | `true` |
-| actionExtracted | `"login"` |
-| durationMs | `0` |
-| error | `null` |
+| success | `false` |
+| actionExtracted | `null` |
+| durationMs | `1` |
+| error | `"Cannot read properties of undefined (reading 'dataString')"` |
 
-## Variant: `AdvancedParserAgent`
+## Variant: `my-agent-v1`
 
 | Metric | Value |
 |--------|-------|
-| result | `"parsed_advanced"` |
+| status | `"ok"` |
+| metrics | `{
+  "success": 0.8,
+  "latency": 120
+}` |

@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  starter-a:
+    image: node:18-bullseye
+    working_dir: /work
+    volumes:
+      - ./:/work:cached
+    command: bash -lc "cd starter-A && npm ci && npm run build && npm run backtest -- --config configs/technical-backtest.yaml"
+  starter-b:
+    image: node:18-bullseye
+    working_dir: /work
+    volumes:
+      - ./:/work:cached
+    ports:
+      - "3000:3000"
+    command: bash -lc "cd starter-B && npm ci && npm run start"
+  starter-c:
+    image: python:3.10-slim
+    working_dir: /work
+    volumes:
+      - ./:/work:cached
+    environment:
+      - DISPLAY=:99
+    command: bash -lc "cd starter-C && python -m pip install -r requirements.txt && python sim_env.py --config experiment_config.yaml --headless || true"

@@ -1,0 +1,52 @@
+name: CI for Starters
+
+on:
+  push:
+    paths:
+      - 'starter-A/**'
+      - 'starter-B/**'
+      - 'starter-C/**'
+  pull_request:
+    paths:
+      - 'starter-A/**'
+      - 'starter-B/**'
+      - 'starter-C/**'
+
+jobs:
+  build-test-starters:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Build and Smoke Test Starter A
+        run: |
+          cd starter-A
+          npm ci
+          npm run build
+          # A simple smoke test: check if the backtest runs without errors
+          npm run backtest -- --config configs/technical-backtest.yaml
+
+      - name: Build and Smoke Test Starter B
+        run: |
+          cd starter-B
+          npm ci
+          npm run build
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Smoke Test Starter C
+        run: |
+          cd starter-C
+          pip install -r requirements.txt
+          # A simple smoke test: run the simulation for a few steps without rendering
+          python sim_env.py --config experiment_config.yaml
+        env:
+          PYBULLET_EGL: "1" # Use headless rendering for CI

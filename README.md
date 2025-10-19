@@ -48,31 +48,56 @@ The repository is organized into a core AI framework and a command-line interfac
 └── package.json
 ```
 
-## Prerequisites
+## Quickstart
+
+Get up and running with the framework in a few simple steps.
+
+### Prerequisites
 
 -   [Node.js](https://nodejs.org/) (v18 or higher)
 -   [npm](https://www.npmjs.com/) (v9 or higher)
 
-## Setup and Installation
+### 1. Clone and Install
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/enterprise-app.git
-    cd enterprise-app
-    ```
+Clone the repository and install the necessary dependencies.
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+```bash
+git clone https://github.com/Loofy147/Research-framwork.git
+cd Research-framwork
+npm install
+```
 
-## Running Experiments
+### 2. Configure Your Experiment
 
-Experiments are defined in `config.yaml` and can be executed via the CLI.
+Define the experiment you want to run in `config.yaml`. Here is an example that tests a baseline agent against an adversary.
 
-1.  **Define an experiment** in the `config.yaml` file.
-2.  **Run the experiment** by its name using the `experiment` script:
-    ```bash
-    npm run experiment -- run "Your Experiment Name"
-    ```
-3.  **View the results** in the generated `summary.md` file.
+```yaml
+# config.yaml
+experiments:
+  - name: "Example Adversarial Test"
+    agents:
+      - variant: "BasicParserAgent"
+        params:
+          temperature: 0.7
+      - variant: "my-agent-v1"
+    rounds: 5
+    metrics:
+      - "success_rate"
+      - "avg_latency"
+```
+
+### 3. Run the Experiment
+
+Execute the experiment using the CLI. The framework will compile the code and run the experiment specified in your configuration.
+
+```bash
+npm run experiment -- run "Example Adversarial Test"
+```
+
+### 4. View the Results
+
+After the experiment completes, a `summary.md` file will be generated in the root directory with the results and metrics.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

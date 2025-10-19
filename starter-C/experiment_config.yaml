@@ -1,0 +1,11 @@
+render: true
+max_steps: 1000
+tolerance: 0.5
+start_pos: [0, 0, 0.5]
+target_pos: [5, 5, 0.5]
+log_dir: "logs/"
+
+pid:
+  kp: 10.0
+  ki: 0.01
+  kd: 1.0

@@ -1,0 +1,20 @@
+{
+  "name": "starter-a-backtest",
+  "version": "1.0.0",
+  "description": "EMA+RSI Backtesting Agent",
+  "main": "dist/orchestrator/backtest.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "backtest": "node dist/orchestrator/backtest.js",
+    "ci": "npm ci"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "yaml": "^2.1.1",
+    "technicalindicators": "^3.0.2"
+  }
+}

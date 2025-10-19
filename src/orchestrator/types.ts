@@ -53,9 +53,9 @@ export interface Experiment {
 
   /**
    * The list of agent variants to be included in the experiment.
-   * @type {string[]}
+   * @type {any[]}
    */
-  variants: string[];
+  agents: any[];
 
   /**
    * The initial context or task definition for the experiment.
@@ -68,7 +68,7 @@ export interface Experiment {
  * Defines a specialized experiment for adversarial benchmarking.
  * It pits one adversarial agent against a set of target agents.
  */
-export interface AdversarialExperiment extends Omit<Experiment, 'variants'> {
+export interface AdversarialExperiment extends Experiment {
   /**
    * The name of the adversarial variant that generates the task context.
    * @type {string}
