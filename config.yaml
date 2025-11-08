@@ -1,11 +1,7 @@
 experiments:
   - name: example-adversarial
-    agents:
-      - variant: BasicParserAgent
-        params:
-          temperature: 0.7
-      - variant: my-agent-v1
-    rounds: 10
-    metrics:
-      - success_rate
-      - avg_latency
+    adversarialVariant: CorruptedTextAdversary
+    targetVariants:
+      - RobustParserAgent
+    context:
+      initial_text: "This is a clean sentence for the agent to process."

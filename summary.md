@@ -1,24 +1,13 @@
 # Experiment Summary: "example-adversarial"
 
-**Date:** Thu, 16 Oct 2025 17:04:17 GMT
+**Date:** Sat, 08 Nov 2025 18:26:23 GMT
 
 ---
 
-## Variant: `BasicParserAgent`
+## Variant: `RobustParserAgent`
 
 | Metric | Value |
 |--------|-------|
-| success | `false` |
-| actionExtracted | `null` |
-| durationMs | `1` |
-| error | `"Cannot read properties of undefined (reading 'dataString')"` |
+| cleaned_text | `"Thi is a cjan sYtence f4r t9e auent to2pFocess"` |
+| characters_removed | `4` |
 
-## Variant: `my-agent-v1`
-
-| Metric | Value |
-|--------|-------|
-| status | `"ok"` |
-| metrics | `{
-  "success": 0.8,
-  "latency": 120
-}` |

@@ -8,6 +8,8 @@ import { MetaOrchestrator } from './Orchestrator.js';
 import { SimpleAdversarialVariant } from './variants/SimpleAdversarialVariant.js';
 import { BasicParserAgent } from './variants/BasicParserAgent.js';
 import { MyAgent } from './variants/MyAgent.js';
+import { CorruptedTextAdversary } from './variants/CorruptedTextAdversary.js';
+import { RobustParserAgent } from './variants/RobustParserAgent.js';
 
 /**
  * Registers all known agent variants with the provided orchestrator instance.
@@ -17,10 +19,12 @@ import { MyAgent } from './variants/MyAgent.js';
 export function registerAllAgents(orchestrator: MetaOrchestrator): void {
   // Register adversarial agents
   orchestrator.registerVariant(new SimpleAdversarialVariant());
+  orchestrator.registerVariant(new CorruptedTextAdversary());
 
   // Register target agents
   orchestrator.registerVariant(new BasicParserAgent());
   orchestrator.registerVariant(new MyAgent());
+  orchestrator.registerVariant(new RobustParserAgent());
 
   // To add a new agent, you would simply instantiate it and register it here.
   // e.g., orchestrator.registerVariant(new MyNewAgent());
