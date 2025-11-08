@@ -99,7 +99,7 @@ describe('MetaOrchestrator', () => {
     expect(targetResult?.contextReceived.taskDescription).toContain('lorem ipsum');
   });
 
-  it('should throw an error if a variant is not found', async () => {
+  it('should return an empty map if a variant is not found', async () => {
     const orchestrator = new MetaOrchestrator();
     const experiment: AdversarialExperiment = {
       name: 'Test with Missing Variant',
@@ -109,12 +109,11 @@ describe('MetaOrchestrator', () => {
       agents: [],
     };
 
-    await expect(
-      orchestrator.runAdversarialBenchmark(experiment)
-    ).rejects.toThrow('Variant "NonExistentVariant" not found.');
+    const results = await orchestrator.runAdversarialBenchmark(experiment);
+    expect(results).toEqual(new Map());
   });
 
-  it('should throw an error if the adversarial variant is not the correct type', async () => {
+  it('should return an empty map if the adversarial variant is not the correct type', async () => {
     const orchestrator = new MetaOrchestrator();
     const notAnAdversary = new MockTargetAgent('NotAnAdversary');
     orchestrator.registerVariant(notAnAdversary);
@@ -127,10 +126,7 @@ describe('MetaOrchestrator', () => {
       agents: [],
     };
 
-    await expect(
-      orchestrator.runAdversarialBenchmark(experiment)
-    ).rejects.toThrow(
-      'Variant "NotAnAdversary" is not an adversarial variant.'
-    );
+    const results = await orchestrator.runAdversarialBenchmark(experiment);
+    expect(results).toEqual(new Map());
   });
 });

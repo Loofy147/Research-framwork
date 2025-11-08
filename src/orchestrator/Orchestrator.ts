@@ -4,6 +4,7 @@
 
 import type { AgentVariant, Experiment, AdversarialExperiment, Context, PerformanceMetrics } from './types.js';
 import { AdversarialVariantBase } from './variants/AdversarialVariant.js';
+import logger from '../utils/logger.js';
 
 /**
  * @class MetaOrchestrator
@@ -50,21 +51,25 @@ export class MetaOrchestrator {
    * @returns {Promise<Map<string, PerformanceMetrics>>} A map of performance metrics for each variant.
    */
   public async runStandardExperiment(experiment: Experiment): Promise<Map<string, PerformanceMetrics>> {
-    const experimentTimerLabel = `[Orchestrator] Standard experiment "${experiment.name}"`;
-    console.time(experimentTimerLabel);
-    console.log(`[Orchestrator] Starting standard experiment: "${experiment.name}"`);
+    logger.info({ experiment: experiment.name }, `Starting standard experiment...`);
+    const startTime = Date.now();
 
     const promises = experiment.agents.map(async (agentConfig) => {
-      console.log(`  - Running variant: ${agentConfig.variant}`);
-      const variant = this.getVariant(agentConfig.variant);
-      const metrics = await variant.run(experiment.context);
-      return [agentConfig.variant, metrics] as [string, PerformanceMetrics];
+      try {
+        const variant = this.getVariant(agentConfig.variant);
+        logger.info({ variant: variant.name }, `Running variant...`);
+        const metrics = await variant.run(experiment.context);
+        return [agentConfig.variant, metrics] as [string, PerformanceMetrics];
+      } catch (error) {
+        logger.error({ error, variant: agentConfig.variant }, `Variant run failed.`);
+        return [agentConfig.variant, { error: (error as Error).message }] as [string, PerformanceMetrics];
+      }
     });
 
     const resultsArray = await Promise.all(promises);
     const results = new Map<string, PerformanceMetrics>(resultsArray);
 
-    console.timeEnd(experimentTimerLabel);
+    logger.info({ experiment: experiment.name, duration: Date.now() - startTime }, `Standard experiment finished.`);
     return results;
   }
 
@@ -75,34 +80,40 @@ export class MetaOrchestrator {
    * @returns {Promise<Map<string, PerformanceMetrics>>} A map of performance metrics for each target variant.
    */
   public async runAdversarialBenchmark(experiment: AdversarialExperiment): Promise<Map<string, PerformanceMetrics>> {
-    const experimentTimerLabel = `[Orchestrator] Adversarial benchmark "${experiment.name}"`;
-    console.time(experimentTimerLabel);
-    console.log(`[Orchestrator] Starting adversarial benchmark: "${experiment.name}"`);
+    logger.info({ experiment: experiment.name }, `Starting adversarial benchmark...`);
+    const startTime = Date.now();
 
-    const adversarialVariant = this.getVariant(experiment.adversarialVariant);
-    if (!(adversarialVariant instanceof AdversarialVariantBase)) {
-      throw new Error(`Variant "${experiment.adversarialVariant}" is not an adversarial variant.`);
+    try {
+      const adversarialVariant = this.getVariant(experiment.adversarialVariant);
+      if (!(adversarialVariant instanceof AdversarialVariantBase)) {
+        throw new Error(`Variant "${experiment.adversarialVariant}" is not an adversarial variant.`);
+      }
+
+      logger.info({ variant: adversarialVariant.name }, `Generating context with adversarial variant...`);
+      const challengingContext = await adversarialVariant.generateContext(experiment.context);
+      logger.info(`Context generated successfully.`);
+
+      const promises = experiment.targetVariants.map(async (variantName) => {
+        try {
+          const variant = this.getVariant(variantName);
+          logger.info({ variant: variant.name }, `Running target variant...`);
+          const metrics = await variant.run(challengingContext);
+          return [variantName, metrics] as [string, PerformanceMetrics];
+        } catch (error) {
+          logger.error({ error, variant: variantName }, `Target variant run failed.`);
+          return [variantName, { error: (error as Error).message }] as [string, PerformanceMetrics];
+        }
+      });
+
+      const resultsArray = await Promise.all(promises);
+      const results = new Map<string, PerformanceMetrics>(resultsArray);
+
+      logger.info({ experiment: experiment.name, duration: Date.now() - startTime }, `Adversarial benchmark finished.`);
+      return results;
+
+    } catch (error) {
+      logger.error({ error, experiment: experiment.name }, `Adversarial benchmark failed.`);
+      return new Map();
     }
-
-    // 1. The adversarial agent generates the challenging context.
-    console.log(`  - Generating context with adversarial variant: ${adversarialVariant.name}`);
-    const challengingContext = await adversarialVariant.generateContext(
-      experiment.context
-    );
-    console.log(`  - Context generated successfully.`);
-
-    // 2. The target agents are run against the new context.
-    const promises = experiment.targetVariants.map(async (variantName) => {
-      console.log(`  - Running target variant: ${variantName}`);
-      const variant = this.getVariant(variantName);
-      const metrics = await variant.run(challengingContext);
-      return [variantName, metrics] as [string, PerformanceMetrics];
-    });
-
-    const resultsArray = await Promise.all(promises);
-    const results = new Map<string, PerformanceMetrics>(resultsArray);
-
-    console.timeEnd(experimentTimerLabel);
-    return results;
   }
 }
